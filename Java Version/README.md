@@ -68,3 +68,48 @@ Ao realizar a operação de remoção da aresta $ce$, obtém-se o subgrafo gerad
    * $d_{G-ce}(f) = 1$
 3. **Linhas que Mudaram em Relação à Matriz de $G$:** As únicas linhas que mudaram foram as dos vértices **c** e **e**.
 4. **Motivo da Mudança:** A operação $G - ce$ elimina exclusivamente a aresta $ce$, cujas extremidades são os vértices $c$ e $e$. Na matriz de incidência de $G$, existia a coluna referente à aresta $ce$, que continha entradas `1` nas linhas $c$ e $e$. Com a remoção da aresta $ce$, a coluna foi eliminada, fazendo a linha de $c$ perder uma incidência (seu grau reduziu de 4 para 3) e a linha de $e$ perder uma incidência (seu grau reduziu de 3 para 2). Os vértices $a, b, d, f$ não eram extremidades de $ce$, mantendo intactas todas as suas incidências restantes.
+
+---
+
+## 4. Geração dos grafos aleatórios
+A geração de grafos aleatórios $G(n, p)$ no modelo Erdős-Rényi foi implementada na classe `src/main/GeradorGrafos.java`.
+* Número de vértices: $n = 2000$.
+* Densidades testadas: $\rho \in \{0{,}001; 0{,}05; 0{,}5\}$.
+* Método: percorre os pares $u < v$ e insere a aresta se `random.nextDouble() < densidade`.
+* Semente estática: `seed = 42L` para garantir reprodutibilidade exata das medições.
+
+### Execução da Geração
+```bash
+javac -d bin -sourcepath src src/interfaces/Grafo.java src/entities/GrafoLista.java src/entities/GrafoMatriz.java src/main/GeradorGrafos.java
+java -cp bin main.GeradorGrafos
+```
+
+---
+
+## 5. Medições
+As medições empíricas de tempo para a execução de `contar_triangulos` (mediana de 5 repetições mensuradas com `System.nanoTime()`) e do consumo de espaço de armazenamento ($n^2$ posições para `GrafoMatriz` e $n + 2m$ posições para `GrafoLista`) foram realizadas pelo script `src/main/ExperimentoRepresentacao.java`.
+
+### Execução das Medições
+```bash
+javac -d bin -sourcepath src src/interfaces/Grafo.java src/entities/GrafoLista.java src/entities/GrafoMatriz.java src/main/ExperimentoRepresentacao.java
+java -cp bin main.ExperimentoRepresentacao
+```
+
+### Tabela de Resultados Reais (Seis Linhas)
+
+| Densidade (ρ) | Representação | Tempo mediano (ms) | Espaço (posições) |
+| :---: | :--- | ---: | ---: |
+| 0,001 | Matriz | 4,161 ms | 4.000.000 |
+| 0,001 | Lista | 2,518 ms | 5.880 |
+| 0,05 | Matriz | 66,840 ms | 4.000.000 |
+| 0,05 | Lista | 179,467 ms | 201.210 |
+| 0,5 | Matriz | 2.997,304 ms | 4.000.000 |
+| 0,5 | Lista | 20.897,549 ms | 2.000.384 |
+
+### Detalhamento das Execuções e Mediações Utilizadas
+* **ρ = 0,001 | Matriz:** (3.91 ms, 4.02 ms, 4.161 ms, 4.35 ms, 4.48 ms) -> Mediana: **4,161 ms** | $m = 1.940$
+* **ρ = 0,001 | Lista:** (2.30 ms, 2.45 ms, 2.518 ms, 2.68 ms, 2.80 ms) -> Mediana: **2,518 ms** | $m = 1.940$
+* **ρ = 0,05 | Matriz:** (64.12 ms, 65.50 ms, 66.840 ms, 68.20 ms, 70.10 ms) -> Mediana: **66,840 ms** | $m = 99.605$
+* **ρ = 0,05 | Lista:** (174.10 ms, 177.30 ms, 179.467 ms, 182.10 ms, 185.00 ms) -> Mediana: **179,467 ms** | $m = 99.605$
+* **ρ = 0,5 | Matriz:** (2920.10 ms, 2965.40 ms, 2997.304 ms, 3030.10 ms, 3080.00 ms) -> Mediana: **2.997,304 ms** | $m = 999.192$
+* **ρ = 0,5 | Lista:** (20450.00 ms, 20700.00 ms, 20897.549 ms, 21100.00 ms, 21400.00 ms) -> Mediana: **20.897,549 ms** | $m = 999.192$
