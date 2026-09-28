@@ -146,3 +146,70 @@ Houve uma aparente divergência prática em grafos densos devido aos fatores aba
 3. **Hipótese 3: Variação de $n$ e limite de memória da CPU.**  
    * *Explicação:* Para $n = 2000$, a Matriz de Adjacência consome cerca de 16 MB, cabendo inteiramente na memória cache L3 da CPU moderna.  
    * *Como testar:* Executar os testes para valores significativamente maiores de $n$ (ex: $n = 10.000$ e $n = 20.000$), onde a Matriz de Adjacência deixará de caber na cache L3, forçando acessos à memória RAM principal e alterando o comportamento de desempenho.
+
+---
+
+## 7. Dataset real
+
+### 7.1 Tipo do conjunto
+O dataset público selecionado foi o **`CollegeMsg`** (disponível no repositório SNAP da Stanford University).
+* **Arquivo:** `data/CollegeMsg.txt` (ou `CollegeMsg.txt`)
+* **Tipo do conjunto:** **Arcos (Digrafo / Grafo Orientado)**. O arquivo armazena mensagens enviadas entre usuários de uma rede social universitária, contendo o par `origem destino timestamp`.
+
+### 7.2 Resultados das Medições no Dataset
+A leitura foi realizada com `ler_pares`, a construção do grafo com `construir` e a verificação com `conferir` na classe `src/main/DatasetReal.java`:
+* **Total de linhas no arquivo:** $59.835$
+* **Linhas ignoradas (comentários/inválidas):** $0$
+* **Rótulos distintos no arquivo:** $1.899$
+* **Ordem obtida pelo grafo ($n$):** $1.899$
+* **Tamanho obtido pelo grafo ($m$):** $13.838$
+* **Densidade real $\rho(G)$:** $0{,}007679$ ($\approx 0{,}77\%$)
+* **Laços descartados ($u = v$):** $0$
+* **Arestas repetidas / arcos recíprocos e duplicatas:** $45.997$
+
+### 7.3 Comparação entre Ordem do Grafo e Rótulos Distintos
+* **Ordem do Grafo ($n$):** $1.899$
+* **Quantidade de Rótulos Distintos:** $1.899$
+* **Conclusão:** A ordem do grafo obtida é **rigorosamente igual** à quantidade de rótulos distintos lidos do arquivo ($1.899$). Todos os usuários foram corretamente mapeados sem perdas de vértices.
+
+### 7.4 Questão dos Arcos Recíprocos e Duplicatas
+Como o dataset é um digrafo com registros de mensagens interativas:
+1. Mensagens adicionais na mesma direção $u \to v$ chegam como duplicatas verdadeiras.
+2. Mensagens de resposta no sentido oposto $v \to u$ chegam ao construtor de grafo simples não orientado como uma aresta já incidente.
+O contador de `repetidas` soma **tanto duplicatas quanto arcos recíprocos**, totalizando $45.997$ ocorrências repetidas descartadas para manter o grafo simples com $13.838$ arestas únicas.
+
+### 7.5 Representação Escolhida e Justificativa
+* **Representação Escolhida:** **Lista de Adjacência (`GrafoLista`)**.
+* **Justificativa Baseada na Densidade:** A densidade medida foi $\rho(G) = 0{,}007679$ ($\approx 0{,}77\%$), caracterizando um grafo extremamente esparso.
+  * A **Lista de Adjacência** ocupa $n + 2m = 1.899 + 2(13.838) = 29.575$ posições em memória.
+  * A **Matriz de Adjacência** ocuparia $n^2 = 1.899^2 = 3.606.201$ posições.
+  * A Lista proporciona uma economia de mais de **121 vezes** no uso de memória.
+
+---
+
+## Como executar
+
+### 1. Compilação de Todo o Projeto
+```bash
+javac -d bin -sourcepath src src/interfaces/Grafo.java src/entities/GrafoLista.java src/entities/GrafoMatriz.java src/main/Teste.java src/main/GeradorGrafos.java src/main/ExperimentoRepresentacao.java src/main/DatasetReal.java
+```
+
+### 2. Execução dos Testes do Grafo Base (Item 2)
+```bash
+java -cp bin main.Teste
+```
+
+### 3. Execução do Gerador de Grafos Aleatórios (Item 4)
+```bash
+java -cp bin main.GeradorGrafos
+```
+
+### 4. Execução das Medições de Tempo e Espaço (Item 5)
+```bash
+java -cp bin main.ExperimentoRepresentacao
+```
+
+### 5. Execução da Análise do Dataset Real (Item 7)
+```bash
+java -cp bin main.DatasetReal
+```
