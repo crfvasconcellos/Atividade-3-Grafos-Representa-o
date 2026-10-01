@@ -1,6 +1,6 @@
 # Atividade 3.16 — Medir o Efeito da Representação
 
-**Nome:** Claudio Vasconcellos  
+**Nomes:** Claudio Vasconcellos, José Augusto, Otávio Augusto
 **Professor:** Jackson Gomes de Souza  
 **Universidade:** UFT — Universidade Federal do Tocantins  
 **Disciplina:** Teoria dos Grafos  
@@ -213,3 +213,71 @@ java -cp bin main.ExperimentoRepresentacao
 ```bash
 java -cp bin main.DatasetReal
 ```
+
+## 8. Implementação em Python 
+ 
+Além da implementação em Java, foi desenvolvida uma versão equivalente em Python, mantendo a mesma estrutura e lógica utilizadas no projeto. 
+ 
+### Estrutura da implementação 
+ 
+A versão em Python está organizada da seguinte forma: 
+ 
+```text 
+python_version_grafos/ 
+├── interfaces/ 
+│   ├── __init__.py 
+│   └── grafo.py 
+├── entities/ 
+│   ├── __init__.py 
+│   ├── GrafoLista.py 
+│   └── GrafoMatriz.py 
+├── main/ 
+│   ├── __init__.py 
+│   ├── ExperimentoRepresentacao.py 
+│   ├── GeradorGrafos.py 
+│   └── DatasetReal.py 
+├── data/ 
+│   └── CollegeMsg.txt 
+├── teste_equivalencia.py 
+└── README.md 
+```
+
+### Arquivos
+
+- `grafo.py`: define a interface abstrata `Grafo`, contendo as operações básicas sobre os grafos.
+- `GrafoLista.py`: implementa o grafo utilizando lista de adjacência com conjuntos (`set`).
+- `GrafoMatriz.py`: implementa o grafo utilizando matriz de adjacência.
+- `ExperimentoRepresentacao.py`: realiza a geração de grafos aleatórios, contagem de triângulos e medição do tempo de execução das representações.
+- `GeradorGrafos.py`: realiza a geração de grafos aleatórios para diferentes valores de densidade.
+- `DatasetReal.py`: realiza a leitura e análise do conjunto de dados `CollegeMsg.txt`.
+- `teste_equivalencia.py`: verifica o funcionamento das duas implementações utilizando o grafo de teste da atividade.
+
+### Execução em Python
+
+Os comandos devem ser executados a partir da pasta `python_version_grafos/`.
+
+Para executar os testes de equivalência:
+
+```bash
+python teste_equivalencia.py
+```
+
+Para executar o experimento de comparação das representações:
+
+```bash
+python main/ExperimentoRepresentacao.py
+```
+
+Para executar a geração de grafos aleatórios:
+
+```bash
+python main/GeradorGrafos.py
+```
+
+Para executar a análise do conjunto de dados real:
+
+```bash
+python main/DatasetReal.py
+```
+
+A implementação em Python foi desenvolvida com o objetivo de reproduzir, de forma equivalente, os experimentos realizados em Java, permitindo realizar a atividade 3.16 utilizando as duas linguagens.
